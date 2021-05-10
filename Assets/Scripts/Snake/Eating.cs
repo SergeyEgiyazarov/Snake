@@ -18,7 +18,7 @@ public class Eating : MonoBehaviour
         if (other.CompareTag("Eat"))
         {
             EatingEat(other.gameObject);
-            Destroy(other.gameObject);
+            Destroy(other.gameObject, 0.2f);
         }
         else if (other.CompareTag("Cristal"))
         {
@@ -29,6 +29,8 @@ public class Eating : MonoBehaviour
     private void EatingEat(GameObject other)
     {
         MeshRenderer eatRender = other.GetComponent<MeshRenderer>();
+
+        other.transform.position = Vector3.Slerp(other.transform.position, transform.position, 0.1f);
 
         if (eatRender.material.color.linear == snakeRenderer.material.color.linear)
         {

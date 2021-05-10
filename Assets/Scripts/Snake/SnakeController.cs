@@ -22,17 +22,15 @@ public class SnakeController : MonoBehaviour
     private int score = 0;
     private int cristals = 0;
     private bool isPower = false;
-
-    private Vector3 mousePrev;
-    private Vector3 mouseNewPos;
+    private LayerMask floorMask;
 
     private Vector3 prevPos;
-    private Quaternion prevRot;
 
     private void Awake()
     {
         playerInput = GetComponent<InputManager>();
         snakeRb = GetComponent<Rigidbody>();
+        floorMask = LayerMask.GetMask("Floor");
     }
 
     void Start()
@@ -68,25 +66,31 @@ public class SnakeController : MonoBehaviour
     {
         if (!isAlive || isPower) return;
 
-        if (!playerInput.GetMouseAction())
+        Vector3 touchPosition = playerInput.GetTouchPosition();
+
+        if (playerInput.GetTouchPress())
         {
-            mousePrev = playerInput.GetMousePosition();
-            snakeRotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 0.1f);
-            prevRot = transform.rotation;
-            snakeRb.MoveRotation(snakeRotation);
+            Ray rayCast = Camera.main.ScreenPointToRay(touchPosition);
+
+            RaycastHit raycastHit;
+
+            if (Physics.Raycast(rayCast, out raycastHit, 100, floorMask))
+            {
+                Vector3 lookPosition = new Vector3(raycastHit.point.x, transform.position.y, transform.position.z + 1f);
+                snakeRotation = Quaternion.LookRotation(lookPosition - transform.position);
+                snakeRb.MoveRotation(snakeRotation);
+            }
         }
         else
         {
-            mouseNewPos = playerInput.GetMousePosition() - mousePrev;
-            Vector3 lookAtPosition = new Vector3(mouseNewPos.x * sensitivity, transform.position.y, transform.position.z + 0.5f);
-            snakeRotation = Quaternion.LookRotation(lookAtPosition);
-            prevRot = transform.rotation;
+            snakeRotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 0.1f);
             snakeRb.MoveRotation(snakeRotation);
         }
 
         prevPos = transform.position;
-        snakeRb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime );
+        snakeRb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
         TailMove();
+
     }
 
     private void CameraMove()
@@ -100,19 +104,14 @@ public class SnakeController : MonoBehaviour
         Vector3 currentPos = prevPos;
         Vector3 prevBonePos;
 
-        Quaternion currentRot = prevRot;
-        Quaternion prevBoneRot;
 
         foreach (var bone in tailBones)
         {
             prevBonePos = bone.transform.position;
-            prevBoneRot = bone.transform.rotation;
 
             bone.target = currentPos;
-            bone.targetRot = currentRot;
 
             currentPos = prevBonePos;
-            currentRot = prevBoneRot;
         }
     }
 
@@ -136,7 +135,6 @@ public class SnakeController : MonoBehaviour
     private void PowerActive()
     {
         prevPos = transform.position;
-        prevRot = transform.rotation;
         snakeRb.MoveRotation(Quaternion.identity);
         snakeRb.MovePosition(new Vector3(0, transform.position.y, transform.position.z) + Vector3.forward * speed * 3 * Time.deltaTime);
         TailMove();

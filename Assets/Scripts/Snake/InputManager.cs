@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     private static InputManager _instance;
+    private TouchControls touchControls;
+
+    private bool isHoold = false;
 
     public static InputManager Instance
     {
@@ -15,6 +18,7 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         Singelton();
+        touchControls = new TouchControls();
     }
 
     private void Singelton()
@@ -29,7 +33,46 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public Vector3 GetMousePosition()
+    private void OnEnable()
+    {
+        touchControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        touchControls.Disable();
+    }
+
+    private void Start()
+    {
+        touchControls.Touch.TouchPress.started += ctx => StartTouch(ctx);
+        touchControls.Touch.TouchPress.canceled += ctx => EndTouch(ctx);
+    }
+
+    private void StartTouch(InputAction.CallbackContext context)
+    {
+        Debug.Log("Touch started " + touchControls.Touch.TouchPosition.ReadValue<Vector2>());
+        isHoold = true;
+    }
+
+    private void EndTouch(InputAction.CallbackContext context)
+    {
+        Debug.Log("Touch ended ");
+        isHoold = false;
+    }
+
+    public bool GetTouchPress()
+    {
+        return isHoold;
+    }
+
+    public Vector2 GetTouchPosition()
+    {
+        return touchControls.Touch.TouchPosition.ReadValue<Vector2>();
+    }
+
+    #region Mouse Use
+    /*public Vector3 GetMousePosition()
     {
         return Mouse.current.position.ReadValue();
     }
@@ -37,5 +80,6 @@ public class InputManager : MonoBehaviour
     public bool GetMouseAction()
     {
         return Mouse.current.leftButton.IsPressed();
-    }
+    }*/
+    #endregion
 }

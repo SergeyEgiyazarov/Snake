@@ -125,3 +125,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0.89, z: -1.2}
   targetRot: {x: -0, y: -0, z: -0, w: 1}
+  offset: 1

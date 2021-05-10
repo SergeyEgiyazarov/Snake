@@ -5,20 +5,17 @@ using UnityEngine;
 public class TailController : MonoBehaviour
 {
     public Vector3 target;
-    public Quaternion targetRot;
-
-    private Vector3 offset;
-    private Rigidbody tailRb;
-
-    void Start()
-    {
-        offset = new Vector3(0, 0, -0.1f);
-        tailRb = GetComponent<Rigidbody>();
-    }
+    public float offset;
 
     private void FixedUpdate()
     {
-        tailRb.MovePosition(target + offset);
-        tailRb.MoveRotation(targetRot.normalized);
+        Vector3 direction = target - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance > offset)
+        {
+            transform.position += direction.normalized * (distance - offset);
+            transform.LookAt(target);
+        }
     }
 }

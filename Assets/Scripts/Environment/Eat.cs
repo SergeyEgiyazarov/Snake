@@ -7,10 +7,12 @@ public class Eat : MonoBehaviour
     public Color color;
 
     private MeshRenderer render;
+    private Animator anim;
 
     private void Awake()
     {
         render = GetComponent<MeshRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     void Start()
@@ -18,4 +20,13 @@ public class Eat : MonoBehaviour
         render.material.color = color;
     }
 
+    private void StartAnimation()
+    {
+        anim.SetTrigger("Eating");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        StartAnimation();
+    }
 }
