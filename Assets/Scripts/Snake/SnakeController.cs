@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public delegate void SnakeEvents();
+
 public class SnakeController : MonoBehaviour
 {
     public float speed;
-    public float sensitivity;
-    public Camera mainCamera;
+    public float forwardSpeed;
     public List<TailController> tailBones;
     public GameObject tailPrefab;
     public Color snakeColor;
-    public Text scoreText;
-    public Text cristalText;
+
+    public event SnakeEvents SnakeEatingHuman;
+    public event SnakeEvents SnakeEatingCristal;
+    public event SnakeEvents EndFaver;
 
     private InputManager playerInput;
     private bool isAlive;
     private Rigidbody snakeRb;
     private Quaternion snakeRotation;
-    private Vector3 offsetCamera;
-    private int score = 0;
-    private int cristals = 0;
     private bool isPower = false;
     private LayerMask floorMask;
 
@@ -37,12 +37,6 @@ public class SnakeController : MonoBehaviour
     {
         isAlive = true;
         snakeRotation = Quaternion.identity;
-        offsetCamera = mainCamera.transform.position - transform.position;
-    }
-
-    void Update()
-    {
-
     }
 
     private void FixedUpdate()
@@ -55,11 +49,6 @@ public class SnakeController : MonoBehaviour
         {
             PowerActive();
         }
-    }
-
-    private void LateUpdate()
-    {
-        CameraMove();
     }
 
     private void MoveAndTurn()
@@ -88,15 +77,9 @@ public class SnakeController : MonoBehaviour
         }
 
         prevPos = transform.position;
-        snakeRb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
+        snakeRb.MovePosition(transform.position + Vector3.forward * forwardSpeed * Time.deltaTime + transform.forward * speed * Time.deltaTime);
         TailMove();
 
-    }
-
-    private void CameraMove()
-    {
-        Vector3 newCamPosition = new Vector3(0.0f, 0.0f, transform.position.z);
-        mainCamera.transform.position = newCamPosition + offsetCamera;
     }
 
     private void TailMove()
@@ -117,35 +100,33 @@ public class SnakeController : MonoBehaviour
 
     public void ChangeScore()
     {
-        score++;
-        scoreText.text = "" + score;
+        SnakeEatingHuman();
     }
 
     public void ChangeCristal()
     {
-        cristals++;
-        cristalText.text = "" + cristals;
-        if (cristals > 3)
-        {
-            isPower = true;
-            StartCoroutine(PowerTime());
-        }
+        SnakeEatingCristal();
+    }
+
+    public void StartFaver()
+    {
+        StartCoroutine(PowerTime());
     }
 
     private void PowerActive()
     {
         prevPos = transform.position;
         snakeRb.MoveRotation(Quaternion.identity);
-        snakeRb.MovePosition(new Vector3(0, transform.position.y, transform.position.z) + Vector3.forward * speed * 3 * Time.deltaTime);
+        snakeRb.MovePosition(new Vector3(0, transform.position.y, transform.position.z) + Vector3.forward * (speed + forwardSpeed) * 3 * Time.deltaTime);
         TailMove();
     }
 
     private IEnumerator PowerTime()
     {
+        isPower = true;
         yield return new WaitForSeconds(5f);
         isPower = false;
-        cristals = 0;
-        cristalText.text = "" + cristals;
+        EndFaver();
     }
 
     public void AddTile()
@@ -154,8 +135,6 @@ public class SnakeController : MonoBehaviour
         newTail.GetComponent<MeshRenderer>().material.color = gameObject.GetComponent<MeshRenderer>().material.color;
         tailBones.Add(newTail.GetComponent<TailController>());
     }
-
-    
 
     public void StopGame(bool isGameOver)
     {
@@ -166,7 +145,7 @@ public class SnakeController : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.Finish(score);
+            GameManager.Instance.Finish();
         }
     }
 

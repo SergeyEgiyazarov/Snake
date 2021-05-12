@@ -275,6 +275,7 @@ GameObject:
   - component: {fileID: 100691057}
   - component: {fileID: 100691058}
   - component: {fileID: 100691059}
+  - component: {fileID: 100691060}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -332,9 +333,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameTime: 40
   spawnManager: {fileID: 100691058}
+  uiManager: {fileID: 100691060}
+  snake: {fileID: 1166147391}
+--- !u!114 &100691060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100691056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95a5fb9a88d3f2d4593f2430d0fb7cba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 515457791}
+  cristalsText: {fileID: 937846231}
+  totalScoreText: {fileID: 699897880}
   gameOverPanel: {fileID: 1255998860}
   finishPanel: {fileID: 497430364}
-  scoreText: {fileID: 699897880}
 --- !u!1001 &206619165
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1381,6 +1398,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1453,6 +1471,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 49.983, y: -9.632001, z: -2.3200002}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 121adc1e8a7c8d2408c97c6990f5ba2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snake: {fileID: 1317864954}
 --- !u!1 &1025464905
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,6 +1620,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1166147391 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1856758713334820217, guid: 57a693be59a78014da999277969e864a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1856758712094932441}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bf3eb2e865b244e8419c9bc3b84f40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1238343446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2412,6 +2455,11 @@ PrefabInstance:
       propertyPath: cristalText
       value: 
       objectReference: {fileID: 937846231}
+    - target: {fileID: 1856758713334820217, guid: 57a693be59a78014da999277969e864a,
+        type: 3}
+      propertyPath: forwardSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1856758713334820217, guid: 57a693be59a78014da999277969e864a,
         type: 3}
       propertyPath: tailBones.Array.data[0]
